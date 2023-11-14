@@ -1,0 +1,27 @@
+.header{
+	margin-top: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+h3{
+	text-align: center;
+}
+.sidebar{
+	margin-bottom: 1rem;
+}
+.nav-tabs{
+	border-bottom: none;
+}
+.tab-content{
+	height: 100%;
+	border: 1px solid var(--bs-border-color);
+	border-radius: var(--bs-border-radius);
+	border-start-start-radius: 0;
+	padding: 10px;
+	overflow: auto;
+}
+table{
+	border-radius: var(--bs-border-radius);
+	overflow: hidden;
+}

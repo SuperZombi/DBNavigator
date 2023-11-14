@@ -1,0 +1,18 @@
+body{
+	height: 100dvh;
+}
+h1{
+	text-align: center;
+}
+form{
+	max-width: 500px;
+	padding: 20px;
+	margin: auto;
+	display: flex;
+	height: 100%;
+	flex-direction: column;
+	justify-content: center;
+}
+.alert{
+	margin-top: var(--bs-alert-margin-bottom);
+}
