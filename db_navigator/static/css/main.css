@@ -14,14 +14,16 @@ h3{
 	border-bottom: none;
 }
 .tab-content{
-	height: 100%;
 	border: 1px solid var(--bs-border-color);
 	border-radius: var(--bs-border-radius);
-	border-start-start-radius: 0;
 	padding: 10px;
 	overflow: auto;
+}
+.tab-content.no-left-radius{
+	border-start-start-radius: 0;
 }
 table{
 	border-radius: var(--bs-border-radius);
 	overflow: hidden;
+	margin-bottom: 0 !important;
 }
