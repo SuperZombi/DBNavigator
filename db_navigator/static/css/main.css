@@ -21,7 +21,7 @@ h3{
 	padding: 10px;
 }
 .table-responsive{
-	max-height: calc(100dvh - 210px);
+	max-height: calc(100dvh - 214px);
 }
 .tab-content.no-left-radius{
 	border-start-start-radius: 0;
@@ -32,7 +32,13 @@ table{
 	margin-bottom: 0 !important;
 }
 table img{
-	max-height: 200px;
+	max-height: 100px;
+}
+table tr td{
+	vertical-align: middle;
+}
+table .no-padding{
+	padding-right: 0;
 }
 @media (min-width: 768px) {
 	.collapse.visible-md {
@@ -40,4 +46,28 @@ table img{
 		height: auto !important;
 		visibility: visible;
 	}
+}
+
+#actions{
+	position: fixed;
+	right: 0;
+	bottom: 0;
+	margin: 1rem;
+	display: flex;
+	gap: 0.75rem;
+	border-radius: var(--bs-border-radius);
+	background-color: color-mix(in srgb, var(--bs-body-bg) 75%, transparent);
+	backdrop-filter: blur(2px);
+	visability: hidden;
+	opacity: 0;
+	transition: 0.25s;
+	pointer-events: none;
+}
+#actions.show{
+	opacity: 1;
+	visability: visible;
+	pointer-events: auto;
+}
+#delete-dialog #delete-amount{
+	font-size: 1rem;
 }

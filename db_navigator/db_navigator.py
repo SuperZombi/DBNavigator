@@ -7,11 +7,12 @@ from jinja2 import Environment, FileSystemLoader
 class DBNavigator:
 	__version__ = "0.0.1"
 
-	def __init__(self, app, file, prefix="", password=""):
+	def __init__(self, app, file, prefix="", password="", readonly=False):
 		self.app = app
 		self.file = os.path.abspath(file)
 		self.prefix = prefix
 		self.password = str(password)
+		self.readonly = readonly
 
 		if not os.path.exists(self.file):
 			raise FileNotFoundError(self.file)
@@ -48,6 +49,12 @@ class DBNavigator:
 					data["sort_type"] = "desc" if sorting.startswith("-") else "asc"
 					data["sorting"] = sorting.lstrip("-")
 				data["column_names"], data["content"] = self.table_content(table_name, sort_by=sorting)
+
+			elif target == "delete" and not self.readonly:
+				rows = request.args.get("rows")
+				self.delete_rows(table_name, rows)
+				new_url = request.args.get("redirect", f"{self.prefix}/table/{table_name}/")
+				return redirect(new_url)
 			else:
 				data["structure"], data["foreign_keys"] = self.table_structure(table_name)
 
@@ -92,7 +99,7 @@ class DBNavigator:
 
 	def render_template(self, filename, data=None):
 		template = self.jinja.get_template(filename)
-		default = {"prefix": self.prefix, "show_logout": self.password != ""}
+		default = {"prefix": self.prefix, "show_logout": self.password != "", "readonly": self.readonly}
 		if data: data = {**default, **data}
 		return template.render(data or default)
 
@@ -118,9 +125,9 @@ class DBNavigator:
 
 	def table_content(self, table, sort_by=None):
 		'''
-		Returns columns names and values: [column_names, values]
+		Returns columns names and values: [ [column_names], [{row_id, data}, ...] ]
 		'''
-		command = f'''SELECT * FROM "{table}"'''
+		command = f'''SELECT rowid AS rowid, * FROM "{table}"'''
 
 		if sort_by:
 			command += f''' ORDER BY "{sort_by.lstrip("-")}"'''
@@ -130,7 +137,13 @@ class DBNavigator:
 		cursor = self.DB.execute(command)
 		column_names = [column[0] for column in cursor.description]
 		results = cursor.fetchall()
-		return column_names, results
+		data = map(lambda row: {"rowid": row[0], "data": row[1:]}, results)
+		return column_names[1:], data
+
+	def delete_rows(self, table, rows):
+		self.DB.execute(f'''DELETE FROM "{table}" WHERE ROWID IN ({rows})''')
+		self.DB.save()
+
 
 
 class Database:
