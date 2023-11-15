@@ -17,12 +17,14 @@
 			</nav>
 
 			<h3><a href="{{prefix}}">{{db_name}}</a> — {{table_name}}</h3>
-			<a href="{{prefix}}/logout">Logout</a>
+			{% if show_logout %}
+				<a href="{{prefix}}/logout">Logout</a>
+			{% endif %}
 		</div>
 		<hr>
 		
 		<div class="row">
-			<div class="col-md-3 show" id="sidebar">
+			<div class="col-md-3 visible-md collapse" id="sidebar">
 				<div class="sidebar list-group">
 					{% for table in tables %}
 						{% if table == table_name %}
@@ -33,7 +35,7 @@
 					{% endfor %}
 				</div>
 			</div>
-			<div class="col">
+			<div class="col-md-9">
 				<ul class="nav nav-tabs">
 					<li class="nav-item">
 						<a class="nav-link {% if current_tab == '' %}active{% endif %}" href="../{{table_name}}">Structure</a>
@@ -48,40 +50,74 @@
 				<div class="tab-content {% if current_tab == '' %} no-left-radius {% endif %}">
 					{% if current_tab == '' %}
 						<h3>Columns</h3>
-						<table class="table table-striped table-hover text-center">
-							<tr>
-								<th>Name</th>
-								<th>Type</th>
-								<th>Not null</th>
-								<th>Primary key</th>
-								<th>Default</th>
-							</tr>
-							{% for row in structure %}
+						<div class="table-responsive">
+							<table class="table table-striped table-hover text-center">
 								<tr>
-									<td><code>{{row["name"]}}</code></td>
-									<td><code>{{row["type"]}}</code></td>
-									<td>{% if row["notnull"] == 1 %}✓{% endif %}</td>
-									<td>{% if row["pk"] == 1 %}✓{% endif %}</td>
-									<td><code>{{row["dflt_value"]}}</code></td>
+									<th>Name</th>
+									<th>Type</th>
+									<th>Not null</th>
+									<th>Primary key</th>
+									<th>Default</th>
 								</tr>
-							{% endfor %}
-						</table>
+								{% for row in structure %}
+									<tr>
+										<td><code>{{row["name"]}}</code></td>
+										<td><code>{{row["type"]}}</code></td>
+										<td>{% if row["notnull"] == 1 %}✓{% endif %}</td>
+										<td>{% if row["pk"] == 1 %}✓{% endif %}</td>
+										<td><code>{{row["dflt_value"]}}</code></td>
+									</tr>
+								{% endfor %}
+							</table>
+						</div>
+
+						{% if foreign_keys %}
+							<hr>
+							<h3>Foreign Keys</h3>
+							<div class="table-responsive">
+								<table class="table table-striped table-hover text-center">
+									<tr>
+										<th>Column</th>
+										<th>Reference</th>
+									</tr>
+									{% for key in foreign_keys %}
+										<tr>
+											<td><code>{{key["from"]}}</code></td>
+											<td>
+												<a href="{{prefix}}/table/{{key['table']}}">{{key['table']}}</a>.<code>{{key["to"]}}</code>
+											</td>
+										</tr>
+									{% endfor %}
+								</table>
+							</div>
+						{% endif %}
+
+
 					{% elif current_tab == 'content' %}
 						<h3>Content</h3>
-						<table class="table table-striped table-hover text-center">
-							<tr>
-								{% for column in column_names %}
-									<th>{{column}}</th>
-								{% endfor %}
-							</tr>
-							{% for row in content %}
-								<tr>
-									{% for item in row %}
-										<td>{{item}}</td>
+						<div class="table-responsive">
+							<table class="table table-striped table-hover text-center">
+								<tr style="white-space: nowrap;">
+									{% for column in column_names %}
+										<th>
+											<a href="?sort={% if sorting == column and sort_type == 'asc' %}-{% endif %}{{ column }}">{{ column }}</a>
+											<span>
+												{% if sorting == column %}
+													{% if sort_type == "asc" %}⯆{% else %}⯅{% endif %}
+												{% endif %}
+											</span>
+										</th>
 									{% endfor %}
 								</tr>
-							{% endfor %}
-						</table>
+								{% for row in content %}
+									<tr>
+										{% for item in row %}
+											<td>{{item}}</td>
+										{% endfor %}
+									</tr>
+								{% endfor %}
+							</table>
+						</div>
 					{% endif %}
 				</div>
 			</div>

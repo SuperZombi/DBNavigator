@@ -9,6 +9,8 @@ h3{
 }
 .sidebar{
 	margin-bottom: 1rem;
+	max-height: calc(100vh - 110px);
+	overflow: auto;
 }
 .nav-tabs{
 	border-bottom: none;
@@ -17,7 +19,9 @@ h3{
 	border: 1px solid var(--bs-border-color);
 	border-radius: var(--bs-border-radius);
 	padding: 10px;
-	overflow: auto;
+}
+.table-responsive{
+	max-height: calc(100dvh - 210px);
 }
 .tab-content.no-left-radius{
 	border-start-start-radius: 0;
@@ -26,4 +30,14 @@ table{
 	border-radius: var(--bs-border-radius);
 	overflow: hidden;
 	margin-bottom: 0 !important;
+}
+table img{
+	max-height: 200px;
+}
+@media (min-width: 768px) {
+	.collapse.visible-md {
+		display: block;
+		height: auto !important;
+		visibility: visible;
+	}
 }

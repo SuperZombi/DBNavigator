@@ -7,7 +7,7 @@ from jinja2 import Environment, FileSystemLoader
 class DBNavigator:
 	__version__ = "0.0.1"
 
-	def __init__(self, app, file, prefix="", password=None):
+	def __init__(self, app, file, prefix="", password=""):
 		self.app = app
 		self.file = os.path.abspath(file)
 		self.prefix = prefix
@@ -43,9 +43,13 @@ class DBNavigator:
 			data = {"db_name": self.DB.name, "table_name": table_name, "tables": tables, "current_tab": target}
 
 			if target == "content":
-				data["column_names"], data["content"] = self.table_content(table_name)
+				sorting = request.args.get('sort')
+				if sorting:
+					data["sort_type"] = "desc" if sorting.startswith("-") else "asc"
+					data["sorting"] = sorting.lstrip("-")
+				data["column_names"], data["content"] = self.table_content(table_name, sort_by=sorting)
 			else:
-				data["structure"] = self.table_structure(table_name)
+				data["structure"], data["foreign_keys"] = self.table_structure(table_name)
 
 			return self.render_template("table.html", data)
 
@@ -88,7 +92,7 @@ class DBNavigator:
 
 	def render_template(self, filename, data=None):
 		template = self.jinja.get_template(filename)
-		default = {"prefix": self.prefix}
+		default = {"prefix": self.prefix, "show_logout": self.password != ""}
 		if data: data = {**default, **data}
 		return template.render(data or default)
 
@@ -97,14 +101,33 @@ class DBNavigator:
 		return [table[0] for table in tables]
 
 	def table_structure(self, table):
+		'''
+		Returns columns data and foreign keys: [data, foreign_keys]
+		'''
 		cursor = self.DB.execute(f'''PRAGMA table_info("{table}")''')
 		results = cursor.fetchall()
 		column_names = [column[0] for column in cursor.description]
 		data = [dict(zip(column_names, row)) for row in results]
-		return data
 
-	def table_content(self, table):
-		cursor = self.DB.execute(f'''SELECT * FROM "{table}"''')
+		cursor = self.DB.execute(f'''PRAGMA foreign_key_list("{table}")''')
+		results = cursor.fetchall()
+		column_names = [column[0] for column in cursor.description]
+		foreign_keys = [dict(zip(column_names, row)) for row in results]
+
+		return data, foreign_keys
+
+	def table_content(self, table, sort_by=None):
+		'''
+		Returns columns names and values: [column_names, values]
+		'''
+		command = f'''SELECT * FROM "{table}"'''
+
+		if sort_by:
+			command += f''' ORDER BY "{sort_by.lstrip("-")}"'''
+			if sort_by.startswith("-"):
+				command += " DESC"
+		
+		cursor = self.DB.execute(command)
 		column_names = [column[0] for column in cursor.description]
 		results = cursor.fetchall()
 		return column_names, results
