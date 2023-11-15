@@ -25,14 +25,18 @@
 		
 		<div class="row">
 			<div class="col-md-3 visible-md collapse" id="sidebar">
-				<div class="sidebar list-group">
-					{% for table in tables %}
-						{% if table == table_name %}
-							<a href="#" class="list-group-item list-group-item-action active" aria-current="true">{{table}}</a>
-						{% else %}
-							<a href="{{prefix}}/table/{{table}}" class="list-group-item list-group-item-action">{{table}}</a>
-						{% endif %}
-					{% endfor %}
+				<div class="d-grid gap-2">
+					<a href="{{prefix}}/sql" class="btn btn-outline-primary">SQL</a>
+
+					<div class="sidebar list-group">
+						{% for table in tables %}
+							{% if table == table_name %}
+								<a href="#" class="list-group-item list-group-item-action active" aria-current="true">{{table}}</a>
+							{% else %}
+								<a href="{{prefix}}/table/{{table}}" class="list-group-item list-group-item-action">{{table}}</a>
+							{% endif %}
+						{% endfor %}
+					</div>
 				</div>
 			</div>
 			<div class="col-md-9">
@@ -44,15 +48,25 @@
 						<a class="nav-link {% if current_tab == 'content' %}active{% endif %}" href="content">Content</a>
 					</li>
 					{% if readonly == False %}
-						<li class="nav-item">
+						<li class="nav-item ms-auto">
 							<a class="nav-link {% if current_tab == 'insert' %}active{% endif %}" href="insert">Insert</a>
 						</li>
-						<li class="nav-item">
-							<a class="nav-link {% if current_tab == 'edit' %}active{% endif %}">Edit</a>
-						</li>
+						{% if current_tab == 'edit' %}
+							<li class="nav-item">
+								<a class="nav-link active">Edit</a>
+							</li>
+						{% endif %}
+						{% if current_tab == '' or current_tab == 'content' %}
+							<li class="nav-item">
+								<a href="#" class="nav-link">Drop</a>
+							</li>
+						{% endif %}
 					{% endif %}
 				</ul>
-				<div class="tab-content {% if current_tab == '' %} no-left-radius {% endif %}">
+				<div class="tab-content
+				{% if current_tab == '' %} no-left-radius
+				{% elif current_tab == 'edit' or current_tab == 'insert' %} no-right-radius
+				{% endif %}">
 					{% if current_tab == '' %}
 						<h3>Columns</h3>
 						<div class="table-responsive">

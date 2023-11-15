@@ -12,15 +12,19 @@
 		<div class="header">
 			<h3>{{db_name}}</h3>
 			{% if show_logout %}
-				<a href="{{prefix}}/logout">Logout</a>
+				<a href="logout">Logout</a>
 			{% endif %}
 		</div>
 		<hr>
 
-		<div class="list-group">
-			{% for table in tables %}
-				<a href="{{prefix}}/table/{{table}}" class="list-group-item list-group-item-action">{{ table }}</a>
-			{% endfor %}
+		<div class="d-grid gap-3">
+			<a href="sql" class="btn btn-outline-primary">SQL</a>
+
+			<div class="list-group">
+				{% for table in tables %}
+					<a href="table/{{table}}" class="list-group-item list-group-item-action">{{ table }}</a>
+				{% endfor %}
+			</div>
 		</div>
 	</div>
 

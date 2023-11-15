@@ -26,6 +26,9 @@ h3{
 .tab-content.no-left-radius{
 	border-start-start-radius: 0;
 }
+.tab-content.no-right-radius{
+	border-start-end-radius: 0;
+}
 table{
 	border-radius: var(--bs-border-radius);
 	overflow: hidden;

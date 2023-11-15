@@ -141,6 +141,7 @@ class DBNavigator:
 		return column_names[1:], data
 
 	def delete_rows(self, table, rows):
+		if self.readonly: raise PermissionError("Database is read-only!")
 		self.DB.execute(f'''DELETE FROM "{table}" WHERE ROWID IN ({rows})''')
 		self.DB.save()
 
