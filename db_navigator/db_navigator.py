@@ -7,12 +7,13 @@ from jinja2 import Environment, FileSystemLoader
 class DBNavigator:
 	__version__ = "0.0.1"
 
-	def __init__(self, app, file, prefix="", password="", readonly=False):
+	def __init__(self, app, file, prefix="", password="", login_func=None, readonly=False):
 		self.app = app
 		self.file = os.path.abspath(file)
 		self.prefix = prefix
 		self.password = str(password)
 		self.readonly = readonly
+		self.login_func = login_func
 
 		if not os.path.exists(self.file):
 			raise FileNotFoundError(self.file)
@@ -61,12 +62,16 @@ class DBNavigator:
 			return self.render_template("table.html", data)
 
 		
-		if password:
+		if password or login_func:
 			@app.route(f"{self.prefix}/login", methods=['GET', 'POST'])
 			def login():
 				if request.method == 'POST':
-					if request.form.get('password') == self.password:
+					if login_func:
+						result = login_func(request.form.get('password'))
+					else:
+						result = request.form.get('password') == self.password
 
+					if result:
 						if request.cookies.get("url_next"):
 							resp = make_response(redirect(request.cookies.get("url_next")))
 						else:
@@ -86,12 +91,16 @@ class DBNavigator:
 
 			@app.before_request
 			def check_password():
-				if request.path.startswith(self.prefix):
-					if (
-						request.cookies.get("db_navigator_password") != self.password and
-						not request.path.startswith(f"{self.prefix}/login") and
-						not request.path.startswith(f"{self.prefix}/db_navigator/")
-					):
+				if (request.path.startswith(self.prefix) and
+					not request.path.startswith(f"{self.prefix}/login") and
+					not request.path.startswith(f"{self.prefix}/db_navigator/") # resources
+				):
+					if login_func:
+						result = login_func(request.cookies.get("db_navigator_password"))
+					else:
+						result = request.cookies.get("db_navigator_password") == self.password
+
+					if not result:
 						resp = make_response(redirect(f"{self.prefix}/login"))
 						resp.set_cookie("url_next", request.path)
 						return resp
@@ -99,7 +108,11 @@ class DBNavigator:
 
 	def render_template(self, filename, data=None):
 		template = self.jinja.get_template(filename)
-		default = {"prefix": self.prefix, "show_logout": self.password != "", "readonly": self.readonly}
+		default = {
+			"prefix": self.prefix,
+			"show_logout": self.password != "" or self.login_func != None,
+			"readonly": self.readonly
+		}
 		if data: data = {**default, **data}
 		return template.render(data or default)
 

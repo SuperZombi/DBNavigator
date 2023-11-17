@@ -1,8 +1,18 @@
 from flask import Flask
 from db_navigator import *
 
+
+def custom_login(password):
+	# make request to db
+	if password == "custom_value":
+		return True	
+
+
 app = Flask(__name__)
-DBNavigator(app, "users.db", prefix="/admin", password=1234)
+DBNavigator(app, "messages.db", prefix="/admin",
+	password=1234,
+	#login_func=custom_login
+)
 
 @app.route("/")
 def home():

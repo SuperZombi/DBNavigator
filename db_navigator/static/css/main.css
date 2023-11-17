@@ -2,10 +2,13 @@
 	margin-top: 20px;
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
+	justify-content: center;
 }
 h3{
 	text-align: center;
+}
+#logout{
+	margin-left: auto;
 }
 .sidebar{
 	margin-bottom: 1rem;
@@ -48,6 +51,11 @@ table .no-padding{
 		display: block;
 		height: auto !important;
 		visibility: visible;
+	}
+}
+@media (max-width: 768px) {
+	.navbar-expand-md {
+		margin-right: auto;
 	}
 }
 
