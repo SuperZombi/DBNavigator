@@ -1,0 +1,20 @@
+<div class="col-md-3 visible-md collapse" id="sidebar">
+	<div class="d-grid gap-2" style="margin-bottom: 0.6rem;">
+		<a href="{{prefix}}/sql" class="btn btn-outline-primary">SQL</a>
+
+		<div class="sidebar list-group">
+			{% for table in tables %}
+				{% if table == table_name %}
+					<a href="#" class="list-group-item list-group-item-action active" aria-current="true">{{table}}</a>
+				{% else %}
+					<a href="{{prefix}}/table/{{table}}" class="list-group-item list-group-item-action">{{table}}</a>
+				{% endif %}
+			{% endfor %}
+		</div>
+
+		{% if show_logout %}
+			<a href="{{prefix}}/logout" class="btn btn-outline-danger">Logout</a>
+			<hr style="margin: 0;" class="d-md-none">
+		{% endif %}
+	</div>
+</div>

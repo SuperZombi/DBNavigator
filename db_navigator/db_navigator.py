@@ -26,7 +26,7 @@ class DBNavigator:
 
 		### Flask routes
 
-		@app.route(f"{self.prefix}/db_navigator/<path:filename>")
+		@app.route(f"{self.prefix}/files/<path:filename>")
 		def static_file(filename):
 			filepath = os.path.join(self.static, filename)
 			return send_file(filepath) if os.path.exists(filepath) else abort(404)
@@ -50,6 +50,7 @@ class DBNavigator:
 					data["sort_type"] = "desc" if sorting.startswith("-") else "asc"
 					data["sorting"] = sorting.lstrip("-")
 				data["column_names"], data["content"] = self.table_content(table_name, sort_by=sorting)
+				data["rows_count"] = self.table_rows_count(table_name)
 
 			elif target == "delete" and not self.readonly:
 				rows = request.args.get("rows")
@@ -59,7 +60,7 @@ class DBNavigator:
 			else:
 				data["structure"], data["foreign_keys"] = self.table_structure(table_name)
 
-			return self.render_template("table.html", data)
+			return self.render_template("table_base.html", data)
 
 		
 		if password or login_func:
@@ -93,7 +94,7 @@ class DBNavigator:
 			def check_password():
 				if (request.path.startswith(self.prefix) and
 					not request.path.startswith(f"{self.prefix}/login") and
-					not request.path.startswith(f"{self.prefix}/db_navigator/") # resources
+					not request.path.startswith(f"{self.prefix}/files/") # resources
 				):
 					if login_func:
 						result = login_func(request.cookies.get("db_navigator_password"))
@@ -135,6 +136,9 @@ class DBNavigator:
 		foreign_keys = [dict(zip(column_names, row)) for row in results]
 
 		return data, foreign_keys
+
+	def table_rows_count(self, table):
+		return self.DB.execute(f'''SELECT COUNT(*) FROM "{table}"''').fetchone()[0]
 
 	def table_content(self, table, sort_by=None):
 		'''

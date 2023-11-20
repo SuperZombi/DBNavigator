@@ -1,13 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>DB Navigator ({{db_name}})</title>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="{{prefix}}/db_navigator/css/bootstrap.min.css">
-	<link rel="stylesheet" href="{{prefix}}/db_navigator/css/main.css">
-</head>
-<body>
+{% extends 'base.html' %}
+{% block title %}DB Navigator ({{db_name}}){% endblock %}
+{% block extra_head %}
+	<link rel="stylesheet" href="{{prefix}}/files/css/main.css">
+{% endblock %}
+
+{% block page %}
 	<div class="container">
 		<div class="header">
 			<h3>{{db_name}}</h3>
@@ -27,7 +24,4 @@
 			</div>
 		</div>
 	</div>
-
-	<script src="{{prefix}}/db_navigator/js/theme.js"></script>
-</body>
-</html>
+{% endblock %}

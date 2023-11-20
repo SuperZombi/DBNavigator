@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}{{db_name}}/{{table_name}}{% endblock %}
+{% block extra_head %}
+	<link rel="stylesheet" href="{{prefix}}/files/css/main.css">
+	<script src="{{prefix}}/files/js/bootstrap.min.js" defer></script>
+	<script src="{{prefix}}/files/js/theme.js" defer></script>
+	{% if current_tab == 'content' %}
+		<script src="{{prefix}}/files/js/content.js" defer></script>
+	{% endif %}
+{% endblock %}
+
+{% block page %}
+<div class="container">
+	<div class="header">
+		<nav class="navbar navbar-expand-md shift">
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+		</nav>
+
+		<h3><a href="{{prefix}}">{{db_name}}</a> — {{table_name}}</h3>
+	</div>
+	<hr>
+	
+	<div class="row">
+		{% include 'sidebar.html' %}
+		
+		<div class="col-md-9">
+			<ul class="nav nav-tabs">
+				<li class="nav-item">
+					<a class="nav-link {% if current_tab == '' %}active{% endif %}" href="../{{table_name}}">Structure</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link {% if current_tab == 'content' %}active{% endif %}" href="content">Content</a>
+				</li>
+				{% if readonly == False %}
+					<li class="nav-item ms-auto">
+						<a class="nav-link {% if current_tab == 'insert' %}active{% endif %}" href="insert">Insert</a>
+					</li>
+					{% if current_tab == 'edit' %}
+						<li class="nav-item">
+							<a class="nav-link active">Edit</a>
+						</li>
+					{% endif %}
+					{% if current_tab == '' or current_tab == 'content' %}
+						<li class="nav-item">
+							<a href="#" class="nav-link">Drop</a>
+						</li>
+					{% endif %}
+				{% endif %}
+			</ul>
+			<div class="tab-content
+			{% if current_tab == '' %} no-left-radius
+			{% elif current_tab == 'edit' or current_tab == 'insert' %} no-right-radius
+			{% endif %}">
+				{% if current_tab == '' %}
+					{% include 'table_structure.html' %}
+
+				{% elif current_tab == 'content' %}
+					{% include 'table_content.html' %}
+				
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

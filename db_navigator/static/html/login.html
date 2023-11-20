@@ -1,13 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Login</title>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="{{prefix}}/db_navigator/css/bootstrap.min.css">
-	<link rel="stylesheet" href="{{prefix}}/db_navigator/css/login.css">
-</head>
-<body>
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% block extra_head %}
+	<link rel="stylesheet" href="{{prefix}}/files/css/login.css">
+{% endblock %}
+
+{% block page %}
+
 	<form method="POST">
 		<h1>Login</h1>
 		{% if message is defined %}
@@ -20,6 +18,4 @@
 		<button type="submit" class="btn btn-primary">Submit</button>
 	</form>
 
-	<script src="{{prefix}}/db_navigator/js/theme.js"></script>
-</body>
-</html>
+{% endblock %}
