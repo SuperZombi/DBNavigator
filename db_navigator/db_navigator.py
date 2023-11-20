@@ -1,5 +1,5 @@
 import os
-from flask import request, send_file, abort, redirect, make_response
+from flask import request, jsonify, send_file, abort, redirect, make_response
 import sqlite3
 from jinja2 import Environment, FileSystemLoader
 
@@ -37,7 +37,7 @@ class DBNavigator:
 			return self.render_template("index.html", {"db_name": self.DB.name, "tables": tables})
 
 		@app.route(f"{self.prefix}/table/<string:table_name>/")
-		@app.route(f"{self.prefix}/table/<string:table_name>/<string:target>")
+		@app.route(f"{self.prefix}/table/<string:table_name>/<string:target>", methods=['GET', 'POST'])
 		def table(table_name, target=""):
 			tables = self.all_tables()
 			if not table_name in tables:
@@ -57,6 +57,12 @@ class DBNavigator:
 				self.delete_rows(table_name, rows)
 				new_url = request.args.get("redirect", f"{self.prefix}/table/{table_name}/")
 				return redirect(new_url)
+			elif target == "insert" and request.method == 'POST' and not self.readonly:
+				result = self.insert_row(table_name, dict(request.form))
+				result_data = {}
+				if result != True:
+					result_data["sql_error"] = str(result)
+				return jsonify({"successfully": result == True, **result_data})
 			else:
 				data["structure"], data["foreign_keys"] = self.table_structure(table_name)
 
@@ -162,6 +168,16 @@ class DBNavigator:
 		self.DB.execute(f'''DELETE FROM "{table}" WHERE ROWID IN ({rows})''')
 		self.DB.save()
 
+	def insert_row(self, table, data):
+		if self.readonly: raise PermissionError("Database is read-only!")
+		try:
+			command = f'''INSERT INTO "{table}" ({",".join(data.keys())})
+				VALUES ({",".join(["?" for _ in range(len(data.values()))])})'''
+			self.DB.execute(command, [None if x == "" else x for x in data.values()])
+			self.DB.save()
+			return True
+		except Exception as e:
+			return e
 
 
 class Database:

@@ -3,10 +3,6 @@
 {% block extra_head %}
 	<link rel="stylesheet" href="{{prefix}}/files/css/main.css">
 	<script src="{{prefix}}/files/js/bootstrap.min.js" defer></script>
-	<script src="{{prefix}}/files/js/theme.js" defer></script>
-	{% if current_tab == 'content' %}
-		<script src="{{prefix}}/files/js/content.js" defer></script>
-	{% endif %}
 {% endblock %}
 
 {% block page %}
@@ -58,6 +54,9 @@
 
 				{% elif current_tab == 'content' %}
 					{% include 'table_content.html' %}
+
+				{% elif current_tab == 'insert' %}
+					{% include 'table_insert.html' %}
 				
 				{% endif %}
 			</div>

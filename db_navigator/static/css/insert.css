@@ -1,0 +1,7 @@
+form button[type="submit"]{
+	width: 100%;
+	max-width: 250px;
+}
+.alert:empty{
+	display: none;
+}
