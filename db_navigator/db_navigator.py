@@ -44,6 +44,9 @@ class DBNavigator:
 				return abort(404)
 			data = {"db_name": self.DB.name, "table_name": table_name, "tables": tables, "current_tab": target}
 
+			if target in ["insert", "edit", "delete"] and self.readonly:
+				return abort(405)
+
 			if target == "content":
 				sorting = request.args.get('sort')
 				if sorting:
@@ -57,12 +60,28 @@ class DBNavigator:
 				self.delete_rows(table_name, rows)
 				new_url = request.args.get("redirect", f"{self.prefix}/table/{table_name}/")
 				return redirect(new_url)
-			elif target == "insert" and request.method == 'POST' and not self.readonly:
+
+			elif target == "insert" and request.method == 'POST':
 				result = self.insert_row(table_name, dict(request.form))
 				result_data = {}
 				if result != True:
 					result_data["sql_error"] = str(result)
 				return jsonify({"successfully": result == True, **result_data})
+
+			elif target == "edit":
+				rowid = request.args.get("row")
+				if request.method == 'POST':
+					result = self.update_row(table_name, rowid, dict(request.form))
+					result_data = {}
+					if result != True:
+						result_data["sql_error"] = str(result)
+					return jsonify({"successfully": result == True, **result_data})
+				else:
+					row_data = self.row_content(table_name, rowid)
+					if not row_data:
+						return abort(404)
+					data["structure"] = [{**item, 'value': row_data.get(item['name']) or ''} for item in self.table_structure(table_name)[0]]
+			
 			else:
 				data["structure"], data["foreign_keys"] = self.table_structure(table_name)
 
@@ -163,6 +182,14 @@ class DBNavigator:
 		data = map(lambda row: {"rowid": row[0], "data": row[1:]}, results)
 		return column_names[1:], data
 
+	def row_content(self, table, rowid):
+		cursor = self.DB.execute(f'''SELECT * FROM "{table}" WHERE ROWID = {rowid}''')
+		result = cursor.fetchone()
+		if not result: return {}
+		column_names = [column[0] for column in cursor.description]
+		data = dict(zip(column_names, result))
+		return data
+
 	def delete_rows(self, table, rows):
 		if self.readonly: raise PermissionError("Database is read-only!")
 		self.DB.execute(f'''DELETE FROM "{table}" WHERE ROWID IN ({rows})''')
@@ -173,6 +200,17 @@ class DBNavigator:
 		try:
 			command = f'''INSERT INTO "{table}" ({",".join(data.keys())})
 				VALUES ({",".join(["?" for _ in range(len(data.values()))])})'''
+			self.DB.execute(command, [None if x == "" else x for x in data.values()])
+			self.DB.save()
+			return True
+		except Exception as e:
+			return e
+
+	def update_row(self, table, rowid, data):
+		if self.readonly: raise PermissionError("Database is read-only!")
+		try:
+			command = f'''UPDATE "{table}" SET {",".join([f'"{key}" = ?' for key in data.keys()])}
+				WHERE ROWID = {rowid}'''
 			self.DB.execute(command, [None if x == "" else x for x in data.values()])
 			self.DB.save()
 			return True

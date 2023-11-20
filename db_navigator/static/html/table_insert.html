@@ -12,6 +12,7 @@
 			{% else %}
 				type="text"
 			{% endif %}
+			value="{{row['value']}}"
 			class="form-control" id="floatingInput" name="{{row['name']}}" placeholder="">
 			<label for="floatingInput">
 				{% if row["notnull"] == 1 %}<code>*</code>{% endif %}{{row["name"]}} <code>({{row["type"]}})</code>
@@ -22,6 +23,8 @@
 	<div class="alert alert-danger" role="alert" id="sql-error"></div>
 
 	<div style="text-align: center;">
-		<button type="submit" class="btn btn-primary">Insert</button>
+		<button type="submit" class="btn btn-primary">
+			{% if current_tab == 'edit' %}Update{% else %}Insert{% endif %}
+		</button>
 	</div>
 </form>

@@ -1,6 +1,6 @@
 function submitInsert(event){
 	var xhr = new XMLHttpRequest();
-	xhr.open("POST", window.location.pathname); 
+	xhr.open("POST", window.location.href); 
 	xhr.onload = function(){
 		if (xhr.status != 200){
 			alert(`[${xhr.status}] ${xhr.statusText}`)
