@@ -1,4 +1,4 @@
-window.onload = _=>{
+window.addEventListener("load", _=>{
 	init_checks();
 	init_actions();
 }

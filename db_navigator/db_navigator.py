@@ -44,7 +44,7 @@ class DBNavigator:
 				return abort(404)
 			data = {"db_name": self.DB.name, "table_name": table_name, "tables": tables, "current_tab": target}
 
-			if target in ["insert", "edit", "delete"] and self.readonly:
+			if target in ["insert", "edit", "delete", "delete_table_data", "drop_table"] and self.readonly:
 				return abort(405)
 
 			if target == "content":
@@ -82,6 +82,14 @@ class DBNavigator:
 						return abort(404)
 					data["structure"] = [{**item, 'value': row_data.get(item['name']) or ''} for item in self.table_structure(table_name)[0]]
 			
+			elif target == "delete_table_data":
+				self.delete_table_data(table_name)
+				return redirect(f"{self.prefix}/table/{table_name}/")
+			
+			elif target == "drop_table":
+				self.drop_table(table_name)
+				return redirect(f"{self.prefix}/")
+
 			else:
 				data["structure"], data["foreign_keys"] = self.table_structure(table_name)
 
@@ -216,6 +224,17 @@ class DBNavigator:
 			return True
 		except Exception as e:
 			return e
+
+	def delete_table_data(self, table):
+		if self.readonly: raise PermissionError("Database is read-only!")
+		self.DB.execute(f'''DELETE FROM "{table}"''')
+		self.DB.save()
+
+	def drop_table(self, table):
+		if self.readonly: raise PermissionError("Database is read-only!")
+		# PRAGMA foreign_keys=on/off
+		self.DB.execute(f'''DROP TABLE "{table}"''')
+		self.DB.save()
 
 
 class Database:

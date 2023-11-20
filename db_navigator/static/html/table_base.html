@@ -3,6 +3,7 @@
 {% block extra_head %}
 	<link rel="stylesheet" href="{{prefix}}/files/css/main.css">
 	<script src="{{prefix}}/files/js/bootstrap.min.js" defer></script>
+	<script src="{{prefix}}/files/js/table.js" defer></script>
 {% endblock %}
 
 {% block page %}
@@ -40,7 +41,7 @@
 					{% endif %}
 					{% if current_tab == '' or current_tab == 'content' %}
 						<li class="nav-item">
-							<a href="#" class="nav-link">Drop</a>
+							<a type="button" data-bs-toggle="modal" data-bs-target="#drop-dialog" class="nav-link">Drop</a>
 						</li>
 					{% endif %}
 				{% endif %}
@@ -62,6 +63,37 @@
 					{% include 'table_insert.html' %}
 				
 				{% endif %}
+			</div>
+
+
+			<div class="modal fade" id="drop-dialog" tabindex="-1" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h1 class="modal-title fs-5" id="exampleModalLabel">Drop {{db_name}}/{{table_name}}?</h1>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<div class="form-check mb-2">
+								<label class="form-check-label">
+									<input class="form-check-input" type="checkbox"
+									onchange="document.querySelector('#confirm-drop').disabled = !this.checked;">
+									Delete <b>ALL</b> table data
+								</label>
+							</div>
+							<div class="form-check">
+								<label class="form-check-label">
+									<input class="form-check-input" type="checkbox" name="table-structure">
+									Delete table structure
+								</label>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+							<button disabled type="button" class="btn btn-danger" id="confirm-drop">Delete</button>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

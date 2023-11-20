@@ -13,8 +13,8 @@
 				type="text"
 			{% endif %}
 			value="{{row['value']}}"
-			class="form-control" id="floatingInput" name="{{row['name']}}" placeholder="">
-			<label for="floatingInput">
+			class="form-control" name="{{row['name']}}" placeholder="">
+			<label>
 				{% if row["notnull"] == 1 %}<code>*</code>{% endif %}{{row["name"]}} <code>({{row["type"]}})</code>
 			</label>
 		</div>
