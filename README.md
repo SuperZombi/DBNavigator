@@ -4,8 +4,15 @@
 ### DataBase Navigator for Flask
 <img src="https://shields.io/badge/version-v0.1.0-blue"><br>
 
-<img width="50%" src="https://raw.githubusercontent.com/SuperZombi/DBNavigator/main/github/images/preview.png">
-<img width="50%" src="https://raw.githubusercontent.com/SuperZombi/DBNavigator/main/github/images/preview_dark.png">
+<img width="65%" src="https://raw.githubusercontent.com/SuperZombi/DBNavigator/main/github/images/preview.png">
+
+<details>
+<summary>More images</summary>
+<img width="65%" src="https://raw.githubusercontent.com/SuperZombi/DBNavigator/main/github/images/preview_dark.png">
+<img width="65%" src="https://raw.githubusercontent.com/SuperZombi/DBNavigator/main/github/images/preview_edit.png">
+<img width="65%" src="https://raw.githubusercontent.com/SuperZombi/DBNavigator/main/github/images/preview_sql.png">
+</details>
+
 
 ## Installation
 ```
