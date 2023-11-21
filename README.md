@@ -2,7 +2,7 @@
 
 # DB Navigator
 ### DataBase Navigator for Flask
-<img src="https://shields.io/badge/version-v0.1.0-blue"><br>
+<img src="https://shields.io/badge/version-v0.1.1-blue"><br>
 
 <img width="65%" src="https://raw.githubusercontent.com/SuperZombi/DBNavigator/main/github/images/preview.png">
 
