@@ -5,7 +5,7 @@ from jinja2 import Environment, FileSystemLoader
 
 
 class DBNavigator:
-	__version__ = "0.0.1"
+	__version__ = "0.1.0"
 
 	def __init__(self, app, file, prefix="", password="", login_func=None, readonly=False):
 		self.app = app
