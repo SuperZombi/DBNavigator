@@ -1,3 +1,5 @@
+<img src="https://raw.githubusercontent.com/SuperZombi/DBNavigator/main/github/images/logo.png" width="240" align="right">
+
 # DB Navigator
 ### DataBase Navigator for Flask
 <img src="https://shields.io/badge/version-v0.1.0-blue"><br>
