@@ -1,7 +1,7 @@
 window.addEventListener("load", _=>{
 	init_checks();
 	init_actions();
-}
+})
 
 function init_checks(){
 	let checked_amount = 0;
