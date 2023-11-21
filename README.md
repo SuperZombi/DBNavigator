@@ -1,15 +1,18 @@
-<img src="https://raw.githubusercontent.com/SuperZombi/DBNavigator/main/github/images/logo.png" width="240" align="right">
-
-# DB Navigator
-### DataBase Navigator for Flask
-<img src="https://shields.io/badge/version-v0.1.1-blue"><br>
+<h1 align="center">DB Navigator</h1>
+<p align="center">
+    <img src="https://raw.githubusercontent.com/SuperZombi/DBNavigator/main/github/images/logo.png" width="200">
+</p>
+<h3 align="center">DataBase Navigator for Flask</h3>
+<p align="center">
+    <img src="https://shields.io/badge/version-v0.1.1-blue">
+</p>
 
 <img width="500px" src="https://raw.githubusercontent.com/SuperZombi/DBNavigator/main/github/images/preview.png">
 
 <details>
 <summary>More images</summary>
-<img width="500px" src="https://raw.githubusercontent.com/SuperZombi/DBNavigator/main/github/images/preview_dark.png">
-<img width="500px" src="https://raw.githubusercontent.com/SuperZombi/DBNavigator/main/github/images/preview_edit.png">
+<img width="500px" src="https://raw.githubusercontent.com/SuperZombi/DBNavigator/main/github/images/preview_dark.png"></br>
+<img width="500px" src="https://raw.githubusercontent.com/SuperZombi/DBNavigator/main/github/images/preview_edit.png"></br>
 <img width="500px" src="https://raw.githubusercontent.com/SuperZombi/DBNavigator/main/github/images/preview_sql.png">
 </details>
 
