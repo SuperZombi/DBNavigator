@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}SQL ({{db_name}}){% endblock %}
+{% block extra_head %}
+	<link rel="stylesheet" href="{{prefix}}/files/css/main.css">
+	<script src="{{prefix}}/files/js/sql.js"></script>
+{% endblock %}
+
+{% block page %}
+	<div class="container">
+		<div class="header">
+			<h3><a href="{{prefix}}">{{db_name}}</a> — SQL</h3>
+			{% if show_logout %}
+				<a id="logout" href="logout">Logout</a>
+			{% endif %}
+		</div>
+		<hr>
+
+		<div class="mb-3">
+			<textarea rows="3" class="form-control mb-2" id="query"></textarea>
+			<button type="button" class="btn btn-outline-primary" style="width: 100%;" id="execute">Execute</button>
+		</div>
+		<div id="results" style="overflow: auto;"></div>
+	</div>
+{% endblock %}

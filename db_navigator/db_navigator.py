@@ -18,7 +18,7 @@ class DBNavigator:
 		if not os.path.exists(self.file):
 			raise FileNotFoundError(self.file)
 
-		self.DB = Database(self.file)
+		self.DB = Database(self.file, readonly)
 
 		self.CUR_DIR = os.path.realpath(os.path.dirname(__file__))
 		self.static = os.path.join(self.CUR_DIR, 'static')
@@ -94,6 +94,15 @@ class DBNavigator:
 				data["structure"], data["foreign_keys"] = self.table_structure(table_name)
 
 			return self.render_template("table_base.html", data)
+
+
+		@app.route(f"{self.prefix}/sql", methods=['GET', 'POST'])
+		def sql():
+			if request.method == 'POST':
+				if request.json.get('query') != "":
+					result = self.execute_sql(request.json['query'])	
+				return jsonify(result)
+			return self.render_template("sql.html", {"db_name": self.DB.name})
 
 		
 		if password or login_func:
@@ -236,12 +245,38 @@ class DBNavigator:
 		self.DB.execute(f'''DROP TABLE "{table}"''')
 		self.DB.save()
 
+	def execute_sql(self, query):
+		answer = {"successfully": True}
+		try:
+			cursor = self.DB.execute(query)
+			results = cursor.fetchall()
+			if len(results) > 0:
+				column_names = [column[0] for column in cursor.description]
+				answer["column_names"] = column_names
+				answer["data"] = results
+				answer["rowcount"] = len(results)
+			else:
+				if self.readonly:
+					answer["total_changes"] = 0
+					cursor.connection.rollback()
+				else:
+					answer["total_changes"] = cursor.connection.total_changes
+					self.DB.save()
+		except Exception as e:
+			answer["successfully"] = False
+			answer["error"] = str(e)
+		
+		return answer
+
 
 class Database:
-	def __init__(self, file):
+	def __init__(self, file, readonly=False):
 		self.file = file
 		self.name = os.path.basename(file)
-		self.conn = sqlite3.connect(file, check_same_thread=False)
+		if readonly:
+			self.conn = sqlite3.connect(f'file:{file}?mode=ro', uri=True, check_same_thread=False)
+		else:
+			self.conn = sqlite3.connect(file, check_same_thread=False)
 
 	def execute(self, command, args=None):
 		cursor = self.conn.cursor()
