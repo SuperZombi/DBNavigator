@@ -1,5 +1,5 @@
 from flask import Flask
-from db_navigator import *
+from db_navigator import DBNavigator
 
 
 def custom_login(password):

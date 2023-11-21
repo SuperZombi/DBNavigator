@@ -273,10 +273,10 @@ class Database:
 	def __init__(self, file, readonly=False):
 		self.file = file
 		self.name = os.path.basename(file)
+		command = f'file:{file}'
 		if readonly:
-			self.conn = sqlite3.connect(f'file:{file}?mode=ro', uri=True, check_same_thread=False)
-		else:
-			self.conn = sqlite3.connect(file, check_same_thread=False)
+			command += '?mode=ro'
+		self.conn = sqlite3.connect(command, uri=True, check_same_thread=False)
 
 	def execute(self, command, args=None):
 		cursor = self.conn.cursor()

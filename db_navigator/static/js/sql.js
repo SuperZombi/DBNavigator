@@ -1,9 +1,14 @@
 window.addEventListener("load", _=>{
 	document.querySelector("#execute").onclick = executeSQL
+
+	if (window.location.search){
+		let params = new URLSearchParams(window.location.search);
+		document.querySelector("#query").value = params.get("query")
+	}
 })
 
 function executeSQL(){
-	let query = document.querySelector("#query").value
+	let query = document.querySelector("#query").value.trim()
 	if (query == ""){return}
 	document.querySelector("#results").innerHTML = ""
 
@@ -27,6 +32,9 @@ function executeSQL(){
 						<div class="alert alert-success" role="alert">Successfully changed ${result.total_changes} rows</div>
 					`
 				}
+				let url = new URL(window.location.href)
+				url.searchParams.set("query", query)
+				window.history.pushState(null, '', url.href);
 			}
 		}
 	};
