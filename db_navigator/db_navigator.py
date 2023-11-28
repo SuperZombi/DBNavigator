@@ -5,7 +5,7 @@ from jinja2 import Environment, FileSystemLoader
 
 
 class DBNavigator:
-	__version__ = "0.1.1"
+	__version__ = "0.1.2"
 
 	def __init__(self, app, file, prefix="", password="", login_func=None, readonly=False):
 		self.app = app
@@ -18,31 +18,31 @@ class DBNavigator:
 		if not os.path.exists(self.file):
 			raise FileNotFoundError(self.file)
 
-		self.DB = Database(self.file, readonly)
+		self.DB = Database(self.file, self.readonly)
 
 		self.CUR_DIR = os.path.realpath(os.path.dirname(__file__))
 		self.static = os.path.join(self.CUR_DIR, 'static')
 		self.jinja = Environment(loader=FileSystemLoader(os.path.join(self.static, "html")))
+		self.init_routes()
 
-		### Flask routes
-
-		@app.route(f"{self.prefix}/files/<path:filename>")
+	def init_routes(self):
+		@self.app.route(f"{self.prefix}/files/<path:filename>")
 		def static_file(filename):
 			filepath = os.path.join(self.static, filename)
 			return send_file(filepath) if os.path.exists(filepath) else abort(404)
 
-		@app.route(f"{self.prefix}/")
+		@self.app.route(f"{self.prefix}/")
 		def index():
 			tables = self.all_tables()
-			return self.render_template("index.html", {"db_name": self.DB.name, "tables": tables})
+			return self.render_template("index.html", {"tables": tables})
 
-		@app.route(f"{self.prefix}/table/<string:table_name>/")
-		@app.route(f"{self.prefix}/table/<string:table_name>/<string:target>", methods=['GET', 'POST'])
+		@self.app.route(f"{self.prefix}/table/<string:table_name>/")
+		@self.app.route(f"{self.prefix}/table/<string:table_name>/<string:target>", methods=['GET', 'POST'])
 		def table(table_name, target=""):
 			tables = self.all_tables()
 			if not table_name in tables:
 				return abort(404)
-			data = {"db_name": self.DB.name, "table_name": table_name, "tables": tables, "current_tab": target}
+			data = {"table_name": table_name, "tables": tables, "current_tab": target}
 
 			if target in ["insert", "edit", "delete", "delete_table_data", "drop_table"] and self.readonly:
 				return abort(405)
@@ -96,21 +96,21 @@ class DBNavigator:
 			return self.render_template("table_base.html", data)
 
 
-		@app.route(f"{self.prefix}/sql", methods=['GET', 'POST'])
+		@self.app.route(f"{self.prefix}/sql", methods=['GET', 'POST'])
 		def sql():
 			if request.method == 'POST':
 				if request.json.get('query') != "":
 					result = self.execute_sql(request.json['query'])	
 				return jsonify(result)
-			return self.render_template("sql.html", {"db_name": self.DB.name})
+			return self.render_template("sql.html")
 
 		
-		if password or login_func:
-			@app.route(f"{self.prefix}/login", methods=['GET', 'POST'])
+		if self.password or self.login_func:
+			@self.app.route(f"{self.prefix}/login", methods=['GET', 'POST'])
 			def login():
 				if request.method == 'POST':
-					if login_func:
-						result = login_func(request.form.get('password'))
+					if self.login_func:
+						result = self.login_func(request.form.get('password'))
 					else:
 						result = request.form.get('password') == self.password
 
@@ -126,20 +126,20 @@ class DBNavigator:
 					return self.render_template("login.html", {"message": "Invalid password!"})
 				return self.render_template("login.html")
 
-			@app.route(f"{self.prefix}/logout")
+			@self.app.route(f"{self.prefix}/logout")
 			def logout():
 				resp = make_response(redirect(f"{self.prefix}/login"))
 				resp.set_cookie("db_navigator_password", '', expires=0)
 				return resp
 
-			@app.before_request
+			@self.app.before_request
 			def check_password():
 				if (request.path.startswith(self.prefix) and
 					not request.path.startswith(f"{self.prefix}/login") and
-					not request.path.startswith(f"{self.prefix}/files/") # resources
+					not request.path.startswith(f"{self.prefix}/files/")
 				):
-					if login_func:
-						result = login_func(request.cookies.get("db_navigator_password"))
+					if self.login_func:
+						result = self.login_func(request.cookies.get("db_navigator_password"))
 					else:
 						result = request.cookies.get("db_navigator_password") == self.password
 
@@ -152,8 +152,10 @@ class DBNavigator:
 	def render_template(self, filename, data=None):
 		template = self.jinja.get_template(filename)
 		default = {
+			"db_name": self.DB.name,
 			"prefix": self.prefix,
 			"show_logout": self.password != "" or self.login_func != None,
+			"version": self.__version__,
 			"readonly": self.readonly
 		}
 		if data: data = {**default, **data}
@@ -273,8 +275,9 @@ class Database:
 	def __init__(self, file, readonly=False):
 		self.file = file
 		self.name = os.path.basename(file)
+		self.readonly = readonly
 		command = f'file:{file}'
-		if readonly:
+		if self.readonly:
 			command += '?mode=ro'
 		self.conn = sqlite3.connect(command, uri=True, check_same_thread=False)
 

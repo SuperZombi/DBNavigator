@@ -4,7 +4,7 @@
 </p>
 <h3 align="center">DataBase Navigator for Flask</h3>
 <p align="center">
-    <img src="https://shields.io/badge/version-v0.1.1-blue">
+    <img src="https://shields.io/badge/version-v0.1.2-blue">
 </p>
 
 <img width="500px" src="https://raw.githubusercontent.com/SuperZombi/DBNavigator/main/github/images/preview.png">
