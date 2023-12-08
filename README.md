@@ -4,16 +4,20 @@
 </p>
 <h3 align="center">DataBase Navigator for Flask</h3>
 <p align="center">
-    <img src="https://shields.io/badge/version-v0.1.2-blue">
+    <img src="https://shields.io/badge/version-v0.1.2-blue"></br>
+    <a href="#donate">💲Support the Project</a>
 </p>
-
-<img width="500px" src="https://raw.githubusercontent.com/SuperZombi/DBNavigator/main/github/images/preview.png">
+<p align="center">
+    <img width="500px" src="https://raw.githubusercontent.com/SuperZombi/DBNavigator/main/github/images/preview.png">
+</p>
 
 <details>
 <summary>More images</summary>
-<img width="500px" src="https://raw.githubusercontent.com/SuperZombi/DBNavigator/main/github/images/preview_dark.png"></br>
-<img width="500px" src="https://raw.githubusercontent.com/SuperZombi/DBNavigator/main/github/images/preview_edit.png"></br>
-<img width="500px" src="https://raw.githubusercontent.com/SuperZombi/DBNavigator/main/github/images/preview_sql.png">
+<p align="center">
+    <img width="500px" src="https://raw.githubusercontent.com/SuperZombi/DBNavigator/main/github/images/preview_dark.png"></br>
+    <img width="500px" src="https://raw.githubusercontent.com/SuperZombi/DBNavigator/main/github/images/preview_edit.png"></br>
+    <img width="500px" src="https://raw.githubusercontent.com/SuperZombi/DBNavigator/main/github/images/preview_sql.png">
+</p>
 </details>
 
 
@@ -58,3 +62,29 @@ def custom_login(password):
 
 DBNavigator(app, "users.db", login_func=custom_login)
 ```
+
+
+<hr>
+
+#### 💲Donate
+
+<table>
+  <tr>
+    <td>
+       <img width="18px" src="https://www.google.com/s2/favicons?domain=https://donatello.to&sz=256">
+    </td>
+    <td>
+      <a href="https://donatello.to/super_zombi">Donatello</a>
+    </td>
+  </tr>
+  <tr>
+    <td>
+       <img width="18px" src="https://www.google.com/s2/favicons?domain=https://www.donationalerts.com&sz=256">
+    </td>
+    <td>
+      <a href="https://www.donationalerts.com/r/super_zombi">Donation Alerts</a>
+    </td>
+  </tr>
+</table>
+    
+(But now it's better to email me and I'll send you the details)
