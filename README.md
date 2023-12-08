@@ -5,7 +5,7 @@
 <h3 align="center">DataBase Navigator for Flask</h3>
 <p align="center">
     <img src="https://shields.io/badge/version-v0.1.2-blue"></br>
-    <a href="#donate">💲Support the Project</a>
+    <a href="#donate"><img src="https://shields.io/badge/💲-Support_the_Project-green"></a>
 </p>
 <p align="center">
     <img width="500px" src="https://raw.githubusercontent.com/SuperZombi/DBNavigator/main/github/images/preview.png">
