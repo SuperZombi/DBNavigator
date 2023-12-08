@@ -3,8 +3,8 @@
     <img src="https://raw.githubusercontent.com/SuperZombi/DBNavigator/main/github/images/logo.png" width="200">
 </p>
 <h3 align="center">DataBase Navigator for Flask</h3>
-<p align="right">
-    <img align="left" src="https://shields.io/badge/version-v0.1.2-blue">
+<p align="center">
+    <img src="https://shields.io/badge/version-v0.1.2-blue"></br>
     <a href="#donate"><img src="https://shields.io/badge/💲-Support_the_Project-green"></a>
 </p>
 <p align="center">
