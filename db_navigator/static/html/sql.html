@@ -2,6 +2,7 @@
 {% block title %}SQL ({{db_name}}){% endblock %}
 {% block extra_head %}
 	<link rel="stylesheet" href="{{prefix}}/files/css/main.css">
+	<script>var READONLY = {{readonly|tojson}}</script>
 	<script src="{{prefix}}/files/js/sql.js"></script>
 {% endblock %}
 

@@ -28,9 +28,14 @@ function executeSQL(){
 				if (result.data){
 					createTable(result.column_names, result.data, result.rowcount)
 				} else{
-					document.querySelector("#results").innerHTML = `
-						<div class="alert alert-success" role="alert">Successfully changed ${result.total_changes} rows</div>
-					`
+					if (result.total_changes == 0 && READONLY){
+						document.querySelector("#results").innerHTML = `
+							<div class="alert alert-warning" role="alert">The database is readonly!</div>`
+					}
+					else{
+						document.querySelector("#results").innerHTML = `
+							<div class="alert alert-success" role="alert">Successfully changed ${result.total_changes} rows</div>`
+					}
 				}
 				let url = new URL(window.location.href)
 				url.searchParams.set("query", query)
@@ -55,7 +60,7 @@ function createTable(columns, data, rows_count){
 		tr.appendChild(th)
 	})
 	table.appendChild(tr)
-	
+
 	data.forEach(row=>{
 		let tr = document.createElement("tr")
 		row.forEach(el=>{
