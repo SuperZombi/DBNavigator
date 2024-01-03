@@ -66,7 +66,16 @@ DBNavigator(app, "users.db", login_func=custom_login)
 
 ### DB Engine
 
-A class that should inherit from the abstract class `DataBaseInterface` and define all its functions.
+A class that should inherit from the abstract class `DataBaseInterface` and implement all its functions.
+```python
+from db_navigator.databases import DataBaseInterface
+
+class YourDBEngine(DataBaseInterface):
+	def __init__(self, *args):
+		super().__init__(*args)
+		self.__name__ = "Your DB Engine name"
+
+```
 <hr>
 
 
