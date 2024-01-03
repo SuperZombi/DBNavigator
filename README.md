@@ -39,7 +39,7 @@ DBNavigator(app, "users.db", prefix="/admin", password="1234")
 app.run(debug=True)
 ```
 
-### DBNavigator(`app`, `file`, `prefix=""`, `password=""`, `login_func=None`, `readonly=False`)
+### DBNavigator(`app`, `file`, `prefix=""`, `password=""`, `login_func=None`, `readonly=False`, `db_engine`)
 | <!-- --> | <!-- --> |
 |----------|----------|
 | `app`    | Flask app |
@@ -48,7 +48,7 @@ app.run(debug=True)
 | `password`   | Access password |
 | `login_func`   | [Custom login function](#custom-login) |
 | `readonly`   | Default editable |
-
+| `db_engine`   | Default is [SQLite](#db-engine) |
 <hr>
 
 ### Custom login
@@ -62,9 +62,13 @@ def custom_login(password):
 
 DBNavigator(app, "users.db", login_func=custom_login)
 ```
-
-
 <hr>
+
+### DB Engine
+
+A class that should inherit from the abstract class `DataBaseInterface` and define all its functions.
+<hr>
+
 
 #### 💲Donate
 
