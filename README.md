@@ -4,7 +4,7 @@
 </p>
 <h3 align="center">DataBase Navigator for Flask</h3>
 <p align="center">
-    <img src="https://shields.io/badge/version-v0.2.0-blue"></br>
+    <img src="https://shields.io/badge/version-v0.2.1-blue"></br>
     <a href="#donate"><img src="https://shields.io/badge/💲-Support_the_Project-2ea043"></a>
 </p>
 <p align="center">

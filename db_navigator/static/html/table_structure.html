@@ -3,22 +3,22 @@
 	<tr>
 		<th>Name</th>
 		<th>Type</th>
-		<th>Not null</th>
 		<th>Primary key</th>
+		<th>Not null</th>
 		<th>Default</th>
 	</tr>
 	{% for row in structure %}
 		<tr>
 			<td><code>{{row["name"]}}</code></td>
 			<td><code>{{row["type"]}}</code></td>
-			<td>{% if row["notnull"] == 1 %}✓{% endif %}</td>
-			<td>{% if row["pk"] == 1 %}✓{% endif %}</td>
+			<td>{% if row["pk"] %}✓{% endif %}</td>
+			<td>{% if row["notnull"] %}✓{% endif %}</td>
 			<td><code>{{row["dflt_value"]}}</code></td>
 		</tr>
 	{% endfor %}
 </table>
 
-{% if foreign_keys %}
+{% if foreign_keys|length > 0 %}
 	<hr>
 	<h3>Foreign Keys</h3>
 	<table class="table table-striped table-hover text-center">
@@ -28,9 +28,9 @@
 		</tr>
 		{% for key in foreign_keys %}
 			<tr>
-				<td><code>{{key["from"]}}</code></td>
+				<td><code>{{key["from_column"]}}</code></td>
 				<td>
-					<a href="{{prefix}}/table/{{key['table']}}">{{key['table']}}</a>.<code>{{key["to"]}}</code>
+					<a href="{{prefix}}/table/{{key['to_table']}}">{{key['to_table']}}</a>.<code>{{key["to_column"]}}</code>
 				</td>
 			</tr>
 		{% endfor %}

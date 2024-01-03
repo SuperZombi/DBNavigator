@@ -5,9 +5,9 @@ from .databases import SQLite
 
 
 class DBNavigator:
-	__version__ = "0.2.0"
+	__version__ = "0.2.1"
 
-	def __init__(self, app, file, prefix="", password="", login_func=None, readonly=False):
+	def __init__(self, app, file, prefix="", password="", login_func=None, readonly=False, db_engine=None):
 		self.app = app
 		self.file = os.path.abspath(file)
 		self.prefix = prefix
@@ -16,7 +16,8 @@ class DBNavigator:
 		self.login_func = login_func
 
 		if not os.path.exists(self.file): raise FileNotFoundError(self.file)
-		self.DB = SQLite(self.file, self.readonly)
+		db_engine = db_engine or SQLite
+		self.DB = db_engine(self.file, self.readonly)
 
 		self.CUR_DIR = os.path.realpath(os.path.dirname(__file__))
 		self.static = os.path.join(self.CUR_DIR, 'static')
@@ -53,7 +54,7 @@ class DBNavigator:
 
 				data["column_names"] = self.DB.table_columns_names(table_name)
 				data["rows_count"] = self.DB.table_rows_count(table_name)
-				data["content"] = self.DB.table_content(table_name, sort_by=sorting)				
+				data["content"] = self.DB.table_content(table_name, sort_by=sorting)
 
 			elif target == "delete" and not self.readonly:
 				rows = request.args.get("rows")
@@ -100,7 +101,7 @@ class DBNavigator:
 		def sql():
 			if request.method == 'POST':
 				if request.json.get('query') != "":
-					result = self.DB.execute_sql(request.json['query'])	
+					result = self.DB.execute_sql(request.json['query'])
 				return jsonify(result)
 			return self.render_template("sql.html")
 

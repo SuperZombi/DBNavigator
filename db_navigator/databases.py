@@ -1,59 +1,80 @@
 import os
 import sqlite3
+from typing import List, Dict, Any
+from abc import ABC, abstractmethod
+from pydantic import BaseModel
 
 
-class DataBaseInterface:
-	def __init__(self, file, readonly=False):
+class RowStructure(BaseModel):
+	name: str
+	type: str
+	pk: bool # primary key
+	notnull: bool
+	dflt_value: Any
+
+class ForeignKey(BaseModel):
+	from_column: str
+	to_table: str
+	to_column: str
+
+class TableContentModel(BaseModel):
+	row_id: int
+	data: List[Any]
+
+class QueryResult(BaseModel):
+	successfully: bool
+	error: str
+	total_changes: int
+	rowcount: int
+	column_names: List[str]
+	data: Dict[str, Any]
+
+
+class DataBaseInterface(ABC):
+	def __init__(self, file:str, readonly:bool=False):
 		self.file = file
 		self.__name__ = None # Interface name
 		self.name = os.path.basename(file) # DB name
 		self.readonly = readonly
 
-	def all_tables(self) -> list: pass
+	@abstractmethod
+	def all_tables(self) -> List[str]: pass
 
-	def table_structure(self, table):
-		'''
-		[{'name', 'type': str, 'notnull': (0, 1), 'pk': (0, 1), 'dflt_value'}, ...]
-		'''
+	@abstractmethod
+	def table_structure(self, table_name:str) -> List[RowStructure]: pass
 
-	def table_foreign_keys(self, table):
-		'''
-		[{'from': this.column_name, 'table': target_table, 'to': target_table.column_name}, ...]
-		'''
+	@abstractmethod
+	def table_foreign_keys(self, table_name:str) -> List[ForeignKey]: pass
 
-	def table_columns_names(self, table) -> list: pass
+	@abstractmethod
+	def table_columns_names(self, table_name:str) -> List[str]: pass
 
-	def table_rows_count(self, table) -> int: pass
+	@abstractmethod
+	def table_rows_count(self, table_name:str) -> int: pass
 
-	def table_content(self, table, sort_by=None):
-		'''
-		[{"row_id": int, "data": list}, ...]
-		'''
+	@abstractmethod
+	def table_content(self, table_name:str, sort_by:str=None) -> List[TableContentModel]: pass
 
-	def row_content(self, table, rowid) -> dict:
-		'''
-		{"key": "value", ...}
-		'''
+	@abstractmethod
+	def row_content(self, table_name:str, rowid:int) -> Dict[str, Any]: pass
 
-	def delete_rows(self, table, rows: list): pass
+	@abstractmethod
+	def delete_rows(self, table_name:str, rows:List[int]): pass
 
-	def insert_row(self, table, data: dict): pass
+	@abstractmethod
+	def insert_row(self, table_name:str, data:Dict[str, Any]): pass
 
-	def update_row(self, table, rowid, data: dict): pass
+	@abstractmethod
+	def update_row(self, table_name:str, rowid:int, new_data:Dict[str, Any]): pass
 
-	def delete_table_data(self, table): pass
+	@abstractmethod
+	def delete_table_data(self, table_name:str): pass
 
-	def drop_table(self, table): pass
+	@abstractmethod
+	def drop_table(self, table_name:str): pass
 
-	def execute_sql(self, query):
-		'''
-		{"successfully": bool,
-		"error": str,
-		"total_changes": int,
-		"rowcount": int,
-		"column_names": list,
-		"data": list}
-		'''
+	@abstractmethod
+	def execute_sql(self, query:str) -> QueryResult: pass
 
 
 
@@ -85,7 +106,8 @@ class SQLite(DataBaseInterface):
 	def table_foreign_keys(self, table):
 		def after(cursor):
 			column_names = [column[0] for column in cursor.description]
-			return [dict(zip(column_names, row)) for row in cursor.fetchall()]
+			arr = [dict(zip(column_names, row)) for row in cursor.fetchall()]
+			return list(map(lambda e: {'from_column': e['from'], 'to_table': e['table'], 'to_column': e['to']}, arr))
 		return self.execute(f'''PRAGMA foreign_key_list("{table}")''', after=after)
 
 	def table_columns_names(self, table):
