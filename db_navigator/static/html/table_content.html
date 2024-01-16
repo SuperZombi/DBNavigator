@@ -13,12 +13,15 @@
 
 		{% for column in column_names %}
 			<th>
-				<a href="?sort={% if sorting == column and sort_type == 'asc' %}-{% endif %}{{ column }}">{{ column }}</a>
+				<a href="?sort={% if sorting == column and sort_type == 'asc' %}-{% endif %}{{ column }}">{{ column }}
 				{% if sorting == column %}
-					<span style="font-size: 0.75rem;">
-						{% if sort_type == "asc" %}⯆{% else %}⯅{% endif %}
-					</span>
+					{% if sort_type == "asc" %}
+						<i class="fas fa-caret-down"></i>
+					{% else %}
+						<i class="fas fa-caret-up"></i>
+					{% endif %}
 				{% endif %}
+				</a>
 			</th>
 		{% endfor %}
 	</tr>

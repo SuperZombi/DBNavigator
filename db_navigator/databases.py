@@ -1,27 +1,26 @@
 import os
 import sqlite3
-from typing import List, Dict, Any
+from typing import List, Dict, Any, TypedDict
 from abc import ABC, abstractmethod
-from pydantic import BaseModel
 
 
-class RowStructure(BaseModel):
+class RowStructure(TypedDict):
 	name: str
 	type: str
 	pk: bool # primary key
 	notnull: bool
 	dflt_value: Any
 
-class ForeignKey(BaseModel):
+class ForeignKey(TypedDict):
 	from_column: str
 	to_table: str
 	to_column: str
 
-class TableContentModel(BaseModel):
+class TableContentModel(TypedDict):
 	row_id: int
 	data: List[Any]
 
-class QueryResult(BaseModel):
+class QueryResult(TypedDict):
 	successfully: bool
 	error: str
 	total_changes: int

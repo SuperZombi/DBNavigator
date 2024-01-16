@@ -6,12 +6,17 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="icon" type="image/png" href="{{prefix}}/files/img/icon.png" />
 	<link rel="stylesheet" href="{{prefix}}/files/css/bootstrap.min.css">
+	<link rel="stylesheet" href="{{prefix}}/files/css/fontawesome/css/all.min.css">
 	{% block extra_head %}{% endblock %}
 </head>
 <body>
 	{% block page %}{% endblock %}
 
 	<script src="{{prefix}}/files/js/theme.js"></script>
-	<script>console.log("%cDB Navigator %c{{version}}", "font-size:20px", "color:red;font-size:20px")</script>
+	<script src="{{prefix}}/files/js/bootstrap.min.js"></script>
+	<script>
+		console.log("%cDB Navigator %c{{version}}", "font-size:20px", "color:red;font-size:20px")
+		document.querySelectorAll('[title]').forEach(el => new bootstrap.Tooltip(el))
+	</script>
 </body>
 </html>

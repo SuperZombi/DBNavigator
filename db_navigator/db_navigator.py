@@ -5,7 +5,7 @@ from .databases import SQLite
 
 
 class DBNavigator:
-	__version__ = "0.2.1"
+	__version__ = "0.2.2"
 
 	def __init__(self, app, file, prefix="", password="", login_func=None, readonly=False, db_engine=None):
 		self.app = app

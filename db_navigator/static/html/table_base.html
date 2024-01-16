@@ -2,7 +2,6 @@
 {% block title %}{{db_name}}/{{table_name}}{% endblock %}
 {% block extra_head %}
 	<link rel="stylesheet" href="{{prefix}}/files/css/main.css">
-	<script src="{{prefix}}/files/js/bootstrap.min.js" defer></script>
 	<script src="{{prefix}}/files/js/table.js" defer></script>
 {% endblock %}
 
@@ -14,8 +13,12 @@
 				<span class="navbar-toggler-icon"></span>
 			</button>
 		</nav>
-
-		<h3><a href="{{prefix}}">{{db_name}}</a> — {{table_name}}</h3>
+		
+		<h3>
+			<a href="{{prefix}}">{{db_name}}</a>
+			<i class="fas fa-caret-right"></i>
+			<span>{{table_name}}</span>
+		</h3>
 	</div>
 	<hr>
 	

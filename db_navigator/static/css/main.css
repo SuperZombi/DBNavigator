@@ -4,6 +4,9 @@
 	align-items: center;
 	justify-content: space-between;
 }
+a{
+	text-decoration: none;
+}
 h3, h5{
 	text-align: center;
 }

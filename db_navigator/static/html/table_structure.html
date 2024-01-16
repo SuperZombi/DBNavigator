@@ -11,8 +11,8 @@
 		<tr>
 			<td><code>{{row["name"]}}</code></td>
 			<td><code>{{row["type"]}}</code></td>
-			<td>{% if row["pk"] %}✓{% endif %}</td>
-			<td>{% if row["notnull"] %}✓{% endif %}</td>
+			<td>{% if row["pk"] %}<i class="fas fa-check"></i>{% endif %}</td>
+			<td>{% if row["notnull"] %}<i class="fas fa-check"></i>{% endif %}</td>
 			<td><code>{{row["dflt_value"]}}</code></td>
 		</tr>
 	{% endfor %}
